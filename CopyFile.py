@@ -84,7 +84,7 @@ if __name__ == '__main__':
                 other_id = p.stem
                 patient_control_id = mappings[other_id]
                 print(f"{patient_control_id if patient_control_id is not None else ''}"
-                      , f"{other_id[:20] if other_id is not None else ''}"
+                      , f"{other_id[:20]+'.jpg' if other_id is not None else ''}"
                       , sep="|", file=f)
                 modified = int(os.path.getmtime(p))
                 if modified > last_modify_time:
@@ -99,8 +99,9 @@ if __name__ == '__main__':
 
     if send:
         if len(new_files_to_upload) > 0:
-            os.chdir("resized")
             ftp = pysftp.Connection(build.sftp_host, username=build.sftp_username, password=build.sftp_password)
+            ftp.put("mappings.txt")
+            os.chdir("resized")
             ftp.cwd("1376Photos")
             print("LIST CWD = ", ftp.pwd)
             for filename in new_files_to_upload:
